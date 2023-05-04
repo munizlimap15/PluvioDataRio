@@ -1,7 +1,12 @@
+# The dplyr and httr libraries are loaded into the R session. 
+# dplyr provides a set of tools for working with data frames, while httr is used for making HTTP requests in R.
 library(dplyr)
 library(httr)
 
 # Create the base URL and body for the POST request
+# In this section, we define the base URL for the website we will be requesting data from, as well as the request body for the HTTP POST request. 
+# The base_url variable specifies the base URL for the website, while the chromebody variable defines the body of the request.
+# The chromebody variable is constructed by concatenating various strings, separated by the & character. This is a standard format for form data in HTTP requests.
 base_url <- "http://websempre.rio.rj.gov.br/dados/pluviometricos/plv/"
 chromebody <- paste0("csrfmiddlewaretoken=pZOjhFqzBVeajAXAWhuNOctqSJ1GU04t&", paste0(rep(seq(1:33), length(years)), "-check=on&", paste0(rep(seq(1:33), length(years)), "-choice=", years, collapse = "&"), collapse = "&"))
 
@@ -19,9 +24,17 @@ heads <- add_headers(c(
   `User-Agent`="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
 ))
 
+# The next section of the code is a for loop that loops through the years 2000 to 2005 and downloads data for each year. 
+# For each iteration of the loop, the year variable takes on a new value.
+# The downloaded folders are stored in the D:/ path as "data_year.zip"
 # Loop through the years and download the data
 for (year in 2000:2005) {
   # Update the body with the current year
+  # Next, the following piece of code updates the chromebody object with the current year. 
+  # The chromebody object is a character string that contains the form data that will be sent with the POST request to the website. 
+  # The strsplit() function is used to split chromebody into a character vector of individual parameter-value pairs, and the resulting vector is turned into a data frame using data.frame(init=.). 
+  # The init column is then split into two separate columns, name and value, using the tidyr::separate() function. The mutate() function is then used to replace the value of the parameter with the name "1-choice" (which specifies the year to download) with the current year. 
+  # Finally, the pull() function is used to extract the parameter-value pairs as a list, which is the format required by the body argument of the httr::POST() function.
   body <- strsplit(chromebody, "&")[[1]] %>%
     data.frame(init=.) %>%
     tidyr::separate(init, into = c("name", "value"), sep = "=") %>%
@@ -29,10 +42,13 @@ for (year in 2000:2005) {
     pull(value, name) %>%
     as.list()
   
-  # Update the file name with the current year
+  # Update and save the file name with the current year
   file_name <- paste0("D:/data_", year, ".zip")
   
   # Download the data for the current year
+  # The httr::POST() function is then called to send a POST request to the website with the updated form data (body) and headers (heads).  
+  # The httr::write_disk() function is used to write the response content to a file with the specified file_name. 
+  # The overwrite argument is set to TRUE to overwrite the file if it already exists.
   post_response <- httr::POST(base_url, body = body, config = heads, httr::write_disk(path = file_name, overwrite = TRUE))
   
   # Print a message to indicate which year was downloaded
