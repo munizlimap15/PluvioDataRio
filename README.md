@@ -18,6 +18,7 @@ Overall, the code is a simple example of how to use the httr library to send HTT
 
 
 ![Screenshot 2023-05-04 141713,50%](https://user-images.githubusercontent.com/16205334/236201369-08d1803f-b7e8-4f8d-ab3a-d25616ce1c78.png)
+<img src="[https://user-images.githubusercontent.com/link-to-your-image.png](https://user-images.githubusercontent.com/16205334/236201369-08d1803f-b7e8-4f8d-ab3a-d25616ce1c78.png)" width="200" />
 
 More insights here: https://stackoverflow.com/questions/76167426/rselenium-click-checkbox-files
 
