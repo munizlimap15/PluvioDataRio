@@ -1,2 +1,2 @@
 # PluvioDataRio
-Automated R script to download pluviometrica data from the "alertatio" database
+Automated R script to download pluviometric data from the "alertatio" database
